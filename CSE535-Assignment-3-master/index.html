@@ -1,0 +1,207 @@
+<html>
+
+	<head>
+		<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+		<style type="text/css">
+			/* basic positioning */
+			.legend { list-style: none; }
+			.legend li { float: left; margin-right: 10px; }
+			.legend span { border: 1px solid #ccc; float: left; width: 12px; height: 12px; margin: 2px; }
+			/* your colors */
+			.legend .walking { background-color: #050aac; }
+			.legend .running { background-color: #b20a1c; }
+			.legend .jumping { background-color: #fcf405; }
+			
+		</style>
+
+	</head>
+	<body>
+		<div class="col-md-8" id="activity_checkbox_div">
+        	<label for="statistics-option">Select the activities and click on view: </label><br/>
+	        <label class="checkbox-inline" style="color:#050aac; "><input type="checkbox" name="activity[]" value="1" checked>Walking</label>
+			<label class="checkbox-inline" style="color:#b20a1c; "><input type="checkbox" name="activity[]" value="0" checked>Running</label>
+			<label class="checkbox-inline" style="color:#fcf405; "><input type="checkbox" name="activity[]" value="-1" checked>Jumping	</label>
+			&nbsp;&nbsp;<button class="btn btn-primary" onclick="view_activity();">View</button>
+    	
+    	
+    		<!-- <label>Legend:</label>
+	    	<ul class="legend">
+			    <li><span class="walking"></span>Walking</li>
+			    <li><span class="running"></span>Running</li>
+			    <li><span class="jumping"></span>Jumping</li>
+			</ul> -->
+		</div>
+    	<div class="col-md-12">
+  			<div id="graph"></div>
+  		</div>
+  		<script type="text/javascript">
+
+  			var checked_boxes = [1,0,-1]
+  			function view_activity(){
+
+  				var checkboxes = document.getElementsByName("activity[]");
+  				var vals = "";
+  				if (checkboxes[0].checked){
+  					checked_boxes[0] = checkboxes[0].value
+  				}
+  				else {
+  					checked_boxes[0] = -9
+  				}
+  				if (checkboxes[1].checked){
+  					checked_boxes[1] = checkboxes[1].value
+  				}
+  				else {
+  					checked_boxes[1] = -9
+  				}
+  				if (checkboxes[2].checked){
+  					checked_boxes[2] = checkboxes[2].value
+  				}
+  				else {
+  					checked_boxes[2] = -9
+  				}
+  		// 		for (var i=0, n=checkboxes.length;i<n;i++) {
+  		// 			console.log(checkboxes[i]);
+				//     if (checkboxes[i].checked) {
+				//         vals += ","+checkboxes[i].value;
+				//     }
+				// }
+				// console.log(vals);
+				console.log(checked_boxes);
+				plot_graph();
+  			}
+
+
+  			function plot_graph(){
+  				Plotly.d3.csv('https://raw.githubusercontent.com/janithmehta/CSE535-Assignment-3/master/Book1%202.csv?token=AM1N8XuDwPSx0C-M9Lt3kXmMGWpvghzeks5a3T62wA%3D%3D', function(err, rows){
+
+				function unpack(rows, key, flag) {
+				  return rows.map(function(row) { 
+				  	if (row['label'] == checked_boxes[0] && flag == 1){
+				  		return row[key]; 
+				  	}
+				  	else if (row['label'] == checked_boxes[1] && flag == 2){
+				  		return row[key]; 
+				  	}
+				  	else if (row['label'] == checked_boxes[2] && flag == 3){
+				  		return row[key]; 
+				  	}
+				  }); 
+				}
+
+				var x1 = unpack(rows , 'x', 1);
+				var y1 = unpack(rows , 'y', 1);
+				var z1 = unpack(rows , 'z', 1); 
+				var c1 = unpack(rows , 'label', 1);
+
+
+
+				var trace1 = {
+					type: 'scatter3d',
+					mode: 'lines',
+					name: 'Walking',
+					x: x1,
+					y: y1,
+					z: z1,
+					opacity: 1,
+					showlegend: true,
+					line: {
+				    	width: 4,
+				    	color: "#050aac",
+				    	// reversescale: false,
+				    	// colorscale: 'Viridis'
+				  	}
+				}
+
+
+				var x2 = unpack(rows , 'x', 2);
+				var y2 = unpack(rows , 'y', 2);
+				var z2 = unpack(rows , 'z', 2); 
+				var c2 = unpack(rows , 'label', 2);
+
+
+
+				var trace2 = {
+					type: 'scatter3d',
+					mode: 'lines',
+					name: 'Running',
+					x: x2,
+					y: y2,
+					z: z2,
+					opacity: 1,
+					showlegend: true,
+					line: {
+				    	width: 4,
+				    	color: "#b20a1c",
+				    	// reversescale: false,
+				    	// colorscale: 'Viridis'
+				  	}
+				}
+
+
+				var x3 = unpack(rows , 'x', 3);
+				var y3 = unpack(rows , 'y', 3);
+				var z3 = unpack(rows , 'z', 3); 
+				var c3 = unpack(rows , 'label', 3);
+
+
+
+				var trace3 = {
+					type: 'scatter3d',
+					mode: 'lines',
+					name: 'Jumping',
+					x: x3,
+					y: y3,
+					z: z3,
+					opacity: 1,
+					showlegend: true,
+					line: {
+				    	width: 4,
+				    	color: "#fcf405",
+				    	// reversescale: false,
+				    	// colorscale: 'Viridis'
+				  	}
+				}	
+
+
+
+				var data = [trace1, trace2, trace3];
+
+				// var layout = {
+				// 	xaxis:
+				// }
+
+
+
+
+				Plotly.react('graph', data, {
+				 	height: 640,
+				  	margin: {
+						t: 10, //top margin
+						l: 5, //left margin
+						r: 5, //right margin
+						b: 20 //bottom margin
+					},
+					showlegend: false,
+				},
+				{
+
+					scrollZoom: true,
+					displayModeBar: true
+				});
+			});
+  			}
+		  	
+  </script>
+</body>
+
+<!-- http://s000.tinyupload.com/?file_id=04151256883229053687 -->
+<!--  http://s000.tinyupload.com/?del_id=09450442543923516344 delete-->
+</html>
